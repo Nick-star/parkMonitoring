@@ -1,0 +1,81 @@
+from databases import Database
+from sqlalchemy import and_
+
+from models import CompanyCreate, ParkingCreate, ParkingImageCreate, CompanyUserCreate, CityCreate
+from tables import companies, parkings, parking_images, company_users, cities
+
+
+async def create_company(db: Database, company: CompanyCreate):
+    query = companies.insert().values(name=company.name, description=company.description)
+    return await db.execute(query=query)
+
+
+async def get_company(db: Database, company_id: int):
+    query = companies.select().where(companies.c.id == company_id)
+    return await db.fetch_one(query=query)
+
+
+async def create_parking(db: Database, parking: ParkingCreate):
+    query = parkings.insert().values(
+        company_id=parking.company_id,
+        name=parking.name,
+        city=parking.city,
+        latitude=parking.latitude,
+        longitude=parking.longitude,
+        total_spaces=parking.total_spaces,
+        free_spaces=parking.free_spaces,
+        is_paid=parking.is_paid,
+        price=parking.price,
+        address=parking.address
+    )
+    return await db.execute(query=query)
+
+
+async def get_parking(db: Database, parking_id: int):
+    query = parkings.select().where(parkings.c.id == parking_id)
+    return await db.fetch_one(query=query)
+
+
+async def get_parkings_by_city(db: Database, city_id: int):
+    query = parkings.select().where(parkings.c.city_id == city_id)
+    return await db.fetch_all(query=query)
+
+
+async def get_parkings(db: Database):
+    query = parkings.select()
+    return await db.fetch_all(query=query)
+
+
+async def create_parking_image(db: Database, parking_id: int, file_location: str):
+    query = parking_images.insert().values(parking_id=parking_id, image=file_location)
+    return await db.execute(query=query)
+
+
+async def get_parking_images(db: Database, parking_id: int):
+    query = parking_images.select().where(parking_images.c.parking_id == parking_id)
+    return await db.fetch_all(query=query)
+
+
+async def create_company_user(db: Database, company_user: CompanyUserCreate):
+    query = company_users.insert().values(
+        user_id=company_user.user_id,
+        company_id=company_user.company_id,
+        is_admin=company_user.is_admin
+    )
+    return await db.execute(query=query)
+
+
+async def get_company_users(db: Database, company_id: int):
+    query = company_users.select().where(company_users.c.company_id == company_id)
+    return await db.fetch_all(query=query)
+
+
+async def get_cities(db: Database):
+    query = cities.select()
+    return await db.fetch_all(query=query)
+
+async def get_company_by_parking(db: Database, parking_id: int):
+    query = parkings.select().where(parkings.c.id == parking_id)
+    parking = await db.fetch_one(query=query)
+    query = companies.select().where(companies.c.id == parking['company_id'])
+    return await db.fetch_one(query=query)

@@ -1,0 +1,105 @@
+.parkings-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+
+  a{
+    color: black;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;               /* Превращаем список в flex контейнер */
+    flex-wrap: wrap;             /* Позволяет элементам списка обтекать и располагаться в несколько рядов */
+    justify-content: space-between; /* Распределяет элементы равномерно с пространством между ними */
+    gap: 20px;                   /* Задает расстояние между элементами */
+    }
+
+    li {
+        border: 1px solid #e0e0e0;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 300px;                /* Задаем ширину карточки */
+        flex: 1;                    /* Позволяет элементам списка растягиваться, если это необходимо */
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+  .parking-name {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .parking-address {
+    font-size: 16px;
+    color: #777;
+    margin-top: 5px;
+  }
+
+  .parking-info {
+    display: flex;
+    justify-content: flex-end; /* Информация будет размещена справа в карточке */
+    margin-top: 15px;
+
+    span {
+      font-size: 16px;
+    }
+  }
+}
+
+.city-input {
+  width: 300px; /* Устанавливаем ширину элемента */
+  padding: 10px 15px; /* Отступы внутри элемента */
+  border-radius: 25px; /* Скругляем углы */
+  border: 1px solid #ccc; /* Граница */
+  font-size: 16px; /* Размер шрифта */
+  margin: 0 auto; /* Выравниваем элемент по центру */
+  display: block; /* Переводим в блочный элемент, чтобы применить margin */
+}
+
+.city-input::placeholder {
+  color: #888; /* Цвет текста placeholder */
+  opacity: 1; /* Изменение прозрачности */
+}
+
+.city-input:-ms-input-placeholder {
+  color: #888; /* Цвет текста placeholder для Internet Explorer */
+}
+
+.city-input::-ms-input-placeholder {
+  color: #888; /* Цвет текста placeholder для Microsoft Edge */
+}
+
+.city-suggestions {
+  list-style: none;
+  // margin: 0;
+  // padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 20px; // added rule to make border more round
+  max-height: 200px;
+  overflow-y: auto;
+
+  li {
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f2f2f2;
+    }
+  }
+}
