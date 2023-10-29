@@ -47,7 +47,6 @@ company_users = Table(
     Column("company_id", Integer, ForeignKey("companies.id")),
 )
 
-
 cities = Table(
     "cities",
     metadata,
@@ -55,3 +54,11 @@ cities = Table(
     Column("name", String(255), index=True)
 )
 
+contacts = Table(
+    "contacts",
+    metadata,
+    Column("id", Integer, primary_key=True, index=True),
+    Column("name", String(255), index=True),
+    Column("email", String(255), index=True),
+    Column("message", String)
+)

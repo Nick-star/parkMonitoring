@@ -1,8 +1,7 @@
 from databases import Database
-from sqlalchemy import and_
 
-from models import CompanyCreate, ParkingCreate, ParkingImageCreate, CompanyUserCreate, CityCreate
-from tables import companies, parkings, parking_images, company_users, cities
+from models import CompanyCreate, ContactCreate, ParkingCreate, CompanyUserCreate
+from tables import companies, parkings, parking_images, company_users, cities, contacts
 
 
 async def create_company(db: Database, company: CompanyCreate):
@@ -74,8 +73,28 @@ async def get_cities(db: Database):
     query = cities.select()
     return await db.fetch_all(query=query)
 
+
 async def get_company_by_parking(db: Database, parking_id: int):
     query = parkings.select().where(parkings.c.id == parking_id)
     parking = await db.fetch_one(query=query)
     query = companies.select().where(companies.c.id == parking['company_id'])
+    return await db.fetch_one(query=query)
+
+
+async def post_contact(db: Database, contact: ContactCreate):
+    query = contacts.insert().values(
+        name=contact.name,
+        email=contact.email,
+        message=contact.message
+    )
+    return await db.execute(query=query)
+
+
+async def get_user_by_email(db: Database, email: str):
+    query = company_users.select().where(company_users.c.email == email)
+    return await db.fetch_one(query=query)
+
+
+async def get_user(db: Database, user_id: int):
+    query = company_users.select().where(company_users.c.id == user_id)
     return await db.fetch_one(query=query)

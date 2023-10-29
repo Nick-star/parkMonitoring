@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import './ParkingPage.scss';
 
 function ParkingPage() {
-    const { id } = useParams();
+    const {id} = useParams();
     const [parking, setParking] = useState<ParkingType | null>(null);
     const [company, setCompany] = useState<CompanyType | null>(null);
     const [images, setImages] = useState<ImageType[] | null>(null);
@@ -74,26 +74,25 @@ function ParkingPage() {
     }, [id]);
 
 
-
-        // Если данные еще не загружены, покажите индикатор загрузки
-        if (!parking || !company) {
-            return <div className="loading">Loading...</div>;
-        }
-
-        return (
-            <div className="parking-page">
-                <div className="parking-page__images">
-                    {images && images.map((image) => (
-                        <img key={image.id} src={`${BASE_URL}/${image.image}`} alt={parking.name} />
-                    ))}
-                </div>
-                <h2>{parking.name}</h2>
-                <p>Адрес: {parking.address}</p>
-                <p>Свободных мест: {parking.total_spaces - parking.free_spaces}/{parking.total_spaces}</p>
-                <p>Компания: <Link to={`/companies/${company.id}`}>{company.name}</Link></p>
-                <p>Стоимость: {parking.is_paid ? parking.price : <span style={{ color: 'green' }}>Бесплатно</span>}</p>
-            </div>
-        );
+    // Если данные еще не загружены, покажите индикатор загрузки
+    if (!parking || !company) {
+        return <div className="loading">Loading...</div>;
     }
 
-    export default ParkingPage;
+    return (
+        <div className="parking-page">
+            <div className="parking-page__images">
+                {images && images.map((image) => (
+                    <img key={image.id} src={`${BASE_URL}/${image.image}`} alt={parking.name}/>
+                ))}
+            </div>
+            <h2>{parking.name}</h2>
+            <p>Адрес: {parking.address}</p>
+            <p>Свободных мест: {parking.total_spaces - parking.free_spaces}/{parking.total_spaces}</p>
+            <p>Компания: <Link to={`/companies/${company.id}`}>{company.name}</Link></p>
+            <p>Стоимость: {parking.is_paid ? parking.price : <span style={{color: 'green'}}>Бесплатно</span>}</p>
+        </div>
+    );
+}
+
+export default ParkingPage;

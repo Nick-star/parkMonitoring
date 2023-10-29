@@ -4,7 +4,7 @@
   padding: 20px;
   font-family: 'Arial', sans-serif;
 
-  a{
+  a {
     color: black;
     margin: 0 15px;
     text-decoration: none;
@@ -20,25 +20,25 @@
   ul {
     list-style: none;
     padding: 0;
-    display: flex;               /* Превращаем список в flex контейнер */
-    flex-wrap: wrap;             /* Позволяет элементам списка обтекать и располагаться в несколько рядов */
+    display: flex; /* Превращаем список в flex контейнер */
+    flex-wrap: wrap; /* Позволяет элементам списка обтекать и располагаться в несколько рядов */
     justify-content: space-between; /* Распределяет элементы равномерно с пространством между ними */
-    gap: 20px;                   /* Задает расстояние между элементами */
-    }
+    gap: 20px; /* Задает расстояние между элементами */
+  }
 
-    li {
-        border: 1px solid #e0e0e0;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 300px;                /* Задаем ширину карточки */
-        flex: 1;                    /* Позволяет элементам списка растягиваться, если это необходимо */
+  li {
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Задаем ширину карточки */
+    flex: 1; /* Позволяет элементам списка растягиваться, если это необходимо */
 
-        &:last-child {
-            margin-bottom: 0;
-        }
+    &:last-child {
+      margin-bottom: 0;
     }
+  }
 
   .parking-name {
     font-size: 20px;

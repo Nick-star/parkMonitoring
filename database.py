@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine
-from databases import Database
-from sqlalchemy.orm import sessionmaker
 import os
+
+from databases import Database
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
@@ -22,7 +23,6 @@ else:
     DB_NAME = os.getenv("DB_NAME")
 
 DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-
 
 engine = create_engine(DATABASE_URL)
 database = Database(DATABASE_URL)

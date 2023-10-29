@@ -1,5 +1,6 @@
-from pydantic import BaseModel, HttpUrl
-from typing import List, Optional
+from typing import Optional
+
+from pydantic import BaseModel
 
 
 class CompanyBase(BaseModel):
@@ -66,6 +67,7 @@ class CompanyUserBase(BaseModel):
     is_admin: bool
     company_id: int
 
+
 class CompanyUserCreate(CompanyUserBase):
     password: str
 
@@ -79,14 +81,31 @@ class CompanyUser(CompanyUserBase):
 
 class CityBase(BaseModel):
     name: str
-    
-    
+
+
 class CityCreate(CityBase):
     pass
 
 
 class City(CityBase):
     id: int
-    
+
+    class Config:
+        orm_mode = True
+
+
+class ContactBase(BaseModel):
+    name: str
+    email: str
+    message: str
+
+
+class ContactCreate(ContactBase):
+    pass
+
+
+class Contact(ContactBase):
+    id: int
+
     class Config:
         orm_mode = True

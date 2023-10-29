@@ -13,7 +13,7 @@ const App: React.FC = () => {
         <Router>
             <div className="App">
                 <nav>
-                    <Link to="/"><Logo className="App-logo" /></Link>
+                    <Link to="/"><Logo className="App-logo"/></Link>
                     <Link to="/parkings">Парковки</Link>
                     <Link to="/contactus">Связаться с нами</Link>
                 </nav>

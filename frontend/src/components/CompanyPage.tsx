@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import "./CompanyPage.scss"
 
 interface Company {
-  name: string;
-  description: string;
+    name: string;
+    description: string;
 }
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const CompanyPage: React.FC = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const [company, setCompany] = useState<Company | null>(null);
     useEffect(() => {
         fetch(`${BASE_URL}/companies/${id}`)
