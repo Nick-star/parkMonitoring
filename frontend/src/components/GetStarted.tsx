@@ -1,5 +1,6 @@
 import React from "react";
-import {Link} from 'react-scroll';
+import {Link as LinkScroll} from 'react-scroll';
+import {Link} from 'react-router-dom';
 import "./GetStarted.scss";
 
 
@@ -13,14 +14,16 @@ const GetStarted: React.FC = () => {
                     парковках, чтобы улучшить свои парковочные решения с помощью Parklite!
                 </p>
                 <div className="buttons">
+                    <Link to="/contactus">
                     <button className="try-api">Связаться с нами</button>
-                    <Link
+                    </Link>
+                    <LinkScroll
                         to="chapter2"
                         smooth={true}
-                        duration={1000}
+                        duration={500}
                     >
                         <button className="learn-more">Узнать больше...</button>
-                    </Link>
+                    </LinkScroll>
                 </div>
                 <img className="get_started_img" src={`${process.env.PUBLIC_URL}/getstarted.png`} alt="Get Started"/>
             </div>
