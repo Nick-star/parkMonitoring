@@ -7,7 +7,10 @@ function ParkingPage() {
     const [parking, setParking] = useState<ParkingType | null>(null);
     const [company, setCompany] = useState<CompanyType | null>(null);
     const [images, setImages] = useState<ImageType[] | null>(null);
+    const [user, setUser] = useState<any>(null);
     const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+
 
     type ImageType = {
         id: number;
@@ -29,6 +32,59 @@ function ParkingPage() {
         id: number;
         name: string;
     };
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${BASE_URL}/users/me/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            setUser(data);
+        };
+
+        fetchUserData();
+    }, []);
+
+    const handleDecrease = async (parkingId: number) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/parkings/${parkingId}/decrease`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (response.ok && parking) {
+        setParking({
+            ...parking,
+            free_spaces: parking.free_spaces - 1,
+        });
+    } else {
+        // Handle error
+    }
+};
+
+const handleIncrease = async (parkingId: number) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/parkings/${parkingId}/increase`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (response.ok && parking) {
+        setParking({
+            ...parking,
+            free_spaces: parking.free_spaces + 1,
+        });
+    } else {
+        // Handle error
+    }
+};
 
     useEffect(() => {
         async function fetchData() {
@@ -89,6 +145,12 @@ function ParkingPage() {
             <h2>{parking.name}</h2>
             <p>Адрес: {parking.address}</p>
             <p>Свободных мест: {parking.total_spaces - parking.free_spaces}/{parking.total_spaces}</p>
+            {user && user.company_id === parking.company_id && (
+                    <>
+                        <button onClick={() => handleDecrease(parking.id)}>-</button>
+                        <button onClick={() => handleIncrease(parking.id)}>+</button>
+                    </>
+                )}
             <p>Компания: <Link to={`/companies/${company.id}`}>{company.name}</Link></p>
             <p>Стоимость: {parking.is_paid ? parking.price : <span style={{color: 'green'}}>Бесплатно</span>}</p>
         </div>

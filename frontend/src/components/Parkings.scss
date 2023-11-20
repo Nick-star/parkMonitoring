@@ -17,7 +17,7 @@
     text-align: center;
   }
 
-  ul {
+  .parking-list {
     list-style: none;
     padding: 0;
     display: flex; /* Превращаем список в flex контейнер */
@@ -30,6 +30,7 @@
     border: 1px solid #e0e0e0;
     padding: 15px;
     border-radius: 5px;
+    max-height: 100px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 300px; /* Задаем ширину карточки */
@@ -87,16 +88,19 @@
 
 .city-suggestions {
   list-style: none;
-  // margin: 0;
-  // padding: 0;
+  padding: 0;
   border: 1px solid #ccc;
   border-radius: 20px; // added rule to make border more round
   max-height: 200px;
   overflow-y: auto;
+  text-align: center;
+  display: flex; /* Превращаем список в flex контейнер */
+  flex-wrap: wrap; /* Позволяет элементам списка обтекать и располагаться в несколько рядов */
+  // justify-content: space-between; /* Распределяет элементы равномерно с пространством между ними */
 
   li {
-    padding: 10px;
     cursor: pointer;
+    margin-bottom: 0px;
 
     &:hover {
       background-color: #f2f2f2;

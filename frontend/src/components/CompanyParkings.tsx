@@ -17,12 +17,30 @@ const Parkings: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (selectedCity) {
-            fetch(`${BASE_URL}/parkings/city/${selectedCity}/`)
-                .then(response => response.json())
-                .then(data => setParkings(data));
+    const fetchParkings = async () => {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${BASE_URL}/users/me/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const user = await response.json();
+        const company_id = user.company_id;
+
+        if (selectedCity != null) {
+            const responseParkings = await fetch(`${BASE_URL}/companies/${company_id}/parkings/city/${selectedCity}/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const data = await responseParkings.json();
+            console.log(data);
+            setParkings(data);
         }
-    }, [selectedCity]);
+    };
+
+    fetchParkings();
+}, [selectedCity]); // Добавьте selectedCity в зависимости useEffect
 
     return (
         <div className="parkings-container">

@@ -1,6 +1,7 @@
 from databases import Database
 
-from models import CompanyCreate, ContactCreate, ParkingCreate, CompanyUserCreate
+from models import CompanyCreate, ContactCreate, ParkingCreate, CompanyUserCreate, CompanyUser, CompanyUserBase, Parking, \
+    CompanyUserUpdate
 from tables import companies, parkings, parking_images, company_users, cities, contacts
 
 
@@ -98,3 +99,32 @@ async def get_user_by_email(db: Database, email: str):
 async def get_user(db: Database, user_id: int):
     query = company_users.select().where(company_users.c.id == user_id)
     return await db.fetch_one(query=query)
+
+async def update_user(db: Database, user: CompanyUser):
+    query = company_users.update().where(company_users.c.id == user.id).values(
+        hashed_password=user.hashed_password
+    )
+    await db.execute(query=query)
+
+async def create_user(db: Database, user: CompanyUserBase, hashed_password: str):
+    query = company_users.insert().values(
+        email=user.email,
+        hashed_password=hashed_password,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        phone_number=user.phone_number,
+        is_admin=user.is_admin,
+        company_id=user.company_id
+    )
+    user_id = await db.execute(query=query)
+    return {**user.dict(), "id": user_id}
+
+async def get_parkings_by_company_and_city(db: Database, company_id: int, city_id: int):
+    query = parkings.select().where(parkings.c.company_id == company_id).where(parkings.c.city_id == city_id)
+    return await db.fetch_all(query=query)
+
+async def update_parking(db: Database, parking: Parking):
+    query = parkings.update().where(parkings.c.id == parking.id).values(
+        free_spaces=parking.free_spaces
+    )
+    await db.execute(query=query)

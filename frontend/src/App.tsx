@@ -12,43 +12,41 @@ import './App.scss'
 import Error404 from './components/Error404';
 import Login from './components/Login';
 import Profile from './components/Profile';
+import Logout from './components/Logout';
+import { AuthContext } from './components/AuthContext';
+import CreateUser from './components/CreateUser';
+import CompanyParkings from './components/CompanyParkings';
+
 
 const App: React.FC = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
-            axios.get('/token/', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then(response => {
-                setUser(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        }
+        setIsAuthenticated(!!token);
     }, []);
+
+    useEffect(() => {
+        console.log('isAuthenticated changed:', isAuthenticated);
+    }, [isAuthenticated]);
+
     return (
+         <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
         <Router>
             <div className="App">
                 <nav>
                     <Link to="/"><Logo className="App-logo"/></Link>
                     <Link to="/parkings">Парковки</Link>
                     <Link to="/contactus">Связаться с нами</Link>
-                    <div>
-                    {user ? (
-                        <div>
+                    {isAuthenticated ? (
+                        <>
                         <Link to="/profile">Профиль</Link>
                         <Link to="/logout">Выйти</Link>
-                        </div>
-                    ) : (
+                        </>
+                        ) : (
                         <Link to="/login">Войти</Link>
-                    )}
-        </div>
+                        )}
                 </nav>
                 <Routes>
                     <Route path="/" element={<GetStarted/>}/>
@@ -59,10 +57,13 @@ const App: React.FC = () => {
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/profile" element={<Profile/>}/>
                     <Route path="*" element={<Error404/>}/>
-                    <Route path="/logout" element={<div>Logout</div>}/>
+                    <Route path="/logout" element={<Logout/>}/>
+                    <Route path="/create-user" element={<CreateUser />} />
+                    <Route path="/company-parkings" element={<CompanyParkings />} />
                 </Routes>
             </div>
         </Router>
+             </AuthContext.Provider>
     );
 }
 

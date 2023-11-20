@@ -78,6 +78,10 @@ class CompanyUser(CompanyUserBase):
     class Config:
         orm_mode = True
 
+class CompanyUserUpdate(BaseModel):
+    email: Optional[str] = None
+    password: Optional[str] = None
+
 
 class CityBase(BaseModel):
     name: str

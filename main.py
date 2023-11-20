@@ -1,10 +1,12 @@
 from typing import List
 
-from fastapi import FastAPI, UploadFile, File, Request, Response, status, HTTPException, Depends
+from fastapi import FastAPI, UploadFile, File, Request, Response, status, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from fastapi.staticfiles import StaticFiles
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+from fastapi.staticfiles import StaticFiles
+from passlib.context import CryptContext
 import crud
 import database
 import models
@@ -14,6 +16,9 @@ from config import CORS_CONFIG
 app = FastAPI()
 
 security = HTTPBasic()
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token/")
 
 
 @app.middleware("http")
@@ -100,6 +105,10 @@ async def create_parking_image(parking_id: int, image: UploadFile = File(...)):
 async def get_images(parking_id: int):
     return await crud.get_parking_images(database.database, parking_id)
 
+@app.get("/companies/{company_id}/parkings/city/{city_id}/")
+async def get_parkings_by_company_and_city(company_id: int, city_id: int):
+    return await crud.get_parkings_by_company_and_city(database.database, company_id, city_id)
+
 
 @app.get("/parkings/{parking_id}/company/")
 async def get_company_by_parking(parking_id: int):
@@ -130,3 +139,60 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
         )
     token = cookie_serializer.dumps(credentials.username)
     return {"access_token": token, "token_type": "bearer"}
+
+@app.get("/users/me/")
+async def read_users_me(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token/"))):
+    username = cookie_serializer.loads(token)
+    user = await crud.get_user_by_email(database.database, username)
+    return user
+
+@app.put("/users/me/")
+async def update_user(user_update: models.CompanyUserUpdate, token: str = Depends(oauth2_scheme)):
+    username = cookie_serializer.loads(token)
+    user = await crud.get_user_by_email(database.database, username)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+
+    if user_update.password:
+        hashed_password = pwd_context.hash(user_update.password)
+        user.hashed_password = hashed_password
+
+    await crud.update_user(database.database, user)
+    return {"detail": "User updated successfully"}
+
+
+@app.post("/users/", response_model=models.CompanyUser)
+async def create_user(user: models.CompanyUserCreate):
+    hashed_password = pwd_context.hash(user.password)
+    user_create = models.CompanyUserBase(
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        phone_number=user.phone_number,
+        is_admin=user.is_admin,
+        company_id=user.company_id
+    )
+    return await crud.create_user(database.database, user_create, hashed_password)
+
+@app.put("/parkings/{parking_id}/increase")
+async def increase_free_spaces(parking_id: int):
+    parking = await crud.get_parking(database.database, parking_id)
+    if not parking:
+        raise HTTPException(status_code=404, detail="Parking not found")
+    if parking.free_spaces >= parking.total_spaces:
+        raise HTTPException(status_code=400, detail="No more spaces available to increase")
+    parking.free_spaces += 1
+    await crud.update_parking(database.database, parking)
+    return {"detail": "Increased free spaces successfully"}
+
+@app.put("/parkings/{parking_id}/decrease")
+async def decrease_free_spaces(parking_id: int):
+    parking = await crud.get_parking(database.database, parking_id)
+    if not parking:
+        raise HTTPException(status_code=404, detail="Parking not found")
+    if parking.free_spaces <= 0:
+        raise HTTPException(status_code=400, detail="No more spaces available to decrease")
+    parking.free_spaces -= 1
+    await crud.update_parking(database.database, parking)
+    return {"detail": "Decreased free spaces successfully"}
